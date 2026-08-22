@@ -1,0 +1,36 @@
+name: Fix Archive URLs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-archive-urls.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-urls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Replace retired Pages path
+        shell: bash
+        run: |
+          grep -RIl -- '-Division3825-Archive' docs README.md | while read -r file; do
+            sed -i 's#https://tune3825.github.io/-Division3825-Archive#https://tune3825.github.io/Division3825-Archive#g' "$file"
+          done
+      - name: Commit corrected URLs
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No retired URLs remain.'
+            exit 0
+          fi
+          git config user.name 'division3825-archive-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs README.md
+          git commit -m 'Fix archive URLs after repository rename'
+          git push

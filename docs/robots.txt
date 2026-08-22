@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tune3825.github.io/-Division3825-Archive/sitemap.xml
